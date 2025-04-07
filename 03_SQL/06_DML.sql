@@ -21,28 +21,55 @@ SET    변경할 컬럼 = 변경할 값  [, 변경할 컬럼 = 변경할 값]
 ************************************************************************ */
 
 -- 직원 ID가 200인 직원의 급여를 5000으로 변경
-
+UPDATE emp 
+SET salary = 5000 
+WHERE emp_id = 200;
+SELECT * FROM emp WHERE emp_id = 200;
 
 -- 직원 ID가 200인 직원의 급여를 10% 인상한 값으로 변경.
-
+SELECT * FROM emp WHERE emp_id = 200;
+UPDATE emp 
+SET salary = salary * 1.1 
+WHERE emp_id = 200;
 
 -- 부서 ID가 100인 직원의 커미션 비율을 null 로 변경.
+SELECT * FROM emp WHERE dept_id = 100;
+UPDATE emp 
+SET comm_pct = NULL 
+WHERE dept_id = 100;
 
+UPDATE emp 
+SET comm_pct = 0.1 
+WHERE dept_id = 100;
 
 --  부서 ID가 100인 직원들의 급여를 100% 인상
+SELECT * FROM emp WHERE dept_id = 100;
+UPDATE emp SET salary = salary * 2 WHERE dept_id = 100;
 
-
+-- autocommit 확인
+SHOW VARIABLES LIKE	'autocommit';
 
 -- 부서 ID가 100인 직원의 커미션 비율을 0.2로 salary는 3000을 더한 값으로, 상사_id는 100 변경.
-
-
+SELECT * FROM emp WHERE dept_id = 100;
+UPDATE emp SET comm_pct = 0.2, salary = salary + 3000, mgr_id = 100 WHERE dept_id = 100;
 
 
 --  IT 부서의 직원들의 급여를 3배 인상
 
+SELECT * FROM emp ;
+SELECT * FROM dept;
 
+UPDATE emp SET salary = salary * 3 WHERE dept_id IN (SELECT dept_id FROM dept WHERE dept_name LIKE ('IT'));
+-- sub
+SELECT * FROM dept WHERE dept_name LIKE ('IT');
 
 -- EMP 테이블의 모든 데이터를 MGR_ID는 NULL로 HIRE_DATE 는 현재일시로 COMM_PCT는 0.5로 수정.
+UPDATE emp 
+SET mgr_id = NULL, 
+    hire_date = CURDATE(), 
+    comm_pct = 0.5;
+
+SELECT * FROM emp;
 
 /* *********************************************************************
 DELETE : 테이블의 행을 삭제
@@ -52,20 +79,28 @@ DELETE : 테이블의 행을 삭제
 ************************************************************************ */
 
 -- 전체 행 삭제
-
+DELETE FROM emp;
+SELECT * FROM emp;
 
 -- 부서테이블에서 부서_ID가 200인 부서 삭제
-
+DELETE FROM dept
+WHERE dept_id =200;
 
 -- 부서테이블에서 부서_ID가 10인 부서 삭제
-
+DELETE FROM dept
+WHERE dept_id =10;
 
 -- 부서 ID가 없는 직원들을 삭제
-
-
+DELETE FROM emp
+WHERE dept_id IS NULL;
+-- NOT EXISTS (SELECT * FROM emp e WHERE d.dept_id = e.dept_id);
+SELECT * FROM emp;
+SELECT * FROM job;
+DELETE FROM job WHERE job_id = 'IT_PROG'; 
 -- 담당 업무(emp.job_id)가 'SA_MAN'이고 급여(emp.salary) 가 12000 미만인 직원들을 삭제.
-
+DELETE FROM emp
+WHERE job_id = 'SA_MAN' AND salary < 12000;
 
 -- comm_pct 가 null이고 job_id 가 IT_PROG인 직원들을 삭제
-
+DELETE FROM emp WHERE comm_pct IS NULL AND job_id='IT_PROG';
 

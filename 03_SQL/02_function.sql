@@ -26,15 +26,24 @@
 													   기준문자열 글자수가 길이보다 많을 경우 나머지는 자른다.
 *************************************************************************************************************** */
 
-
 -- EMP 테이블에서 직원의 이름(emp_name)을 모두 대문자, 소문자, 이름 글자수를 조회
-
+SELECT upper(emp_name), lower(emp_name), char_length(emp_name)
+FROM emp;
 
 -- 직원 이름(emp_name) 의 자릿수를 15자리로 맞추고 15자가 안되는 이름의 경우  공백을 앞에 붙여 조회. 
-
+SELECT emp_name as name1,
+	   lpad(emp_name, 15, ' ') as name2, -- 왼쪽 기준으로 15자를 채우되 비어있는 공간은 ' '공백으로 채움
+       rpad(emp_name, 15, ' ') as name3
+FROM emp;
+#가변형 사이트에서 공백을 강제로 지정할 때 사용하는듯?
     
 --  EMP 테이블에서 이름(emp_name)이 10글자 이상인 직원들의 이름(emp_name)과 이름의 글자수 조회
+SELECT emp_name, char_length(emp_name)
+FROM emp
+WHERE char_length(emp_name) >= 10;
 
+SELECT CONCAT('$',FORMAT(salary, 2)) as '$ salary' -- 안쪽 함수부터 실행됨
+FROM emp;
 
 
 /* **************************************************************************
@@ -53,17 +62,26 @@
 
 -- EMP 테이블에서 각 직원에 대해 직원ID(emp_id), 이름(emp_name), 급여(salary) 그리고 15% 인상된 급여(salary)를 조회하는 질의를 작성하시오.
 -- (단, 15% 인상된 급여는 올림해서 정수로 표시하고, 별칭을 "SAL_RAISE"로 지정.)
-
-
+SELECT emp_id, emp_name, salary,
+	   CEIL(salary *1.15) as "SAL_RAISE",
+       FLOOR(salary * 1.15) as "SAL_RAISE2"
+FROM emp;
 
 -- 위의 SQL문에서 인상 급여(sal_raise)와 급여(salary) 간의 차액을 추가로 조회 
 -- (직원ID(emp_id), 이름(emp_name), 15% 인상급여, 인상된 급여와 기존 급여(salary)와 차액)
-
+SELECT emp_id, emp_name, salary,
+	   CEIL(salary *1.15) - salary as "SAL_RAISE"
+FROM emp;
 
 
 --  EMP 테이블에서 커미션이 있는 직원들의 직원_ID(emp_id), 이름(emp_name), 커미션비율(comm_pct), 커미션비율(comm_pct)을 8% 인상한 결과를 조회.
 -- (단 커미션을 8% 인상한 결과는 소숫점 이하 2자리에서 반올림하고 별칭은 comm_raise로 지정)
-
+SELECT emp_id,
+	   emp_name,
+       comm_pct,
+       ROUND(comm_pct * 1.08, 2) as 'comm_raise'
+FROM emp
+WHERE comm_pct IS NOT NULL;
 
 
 /* ***************************************************************************************************************
@@ -90,23 +108,56 @@
  date_format(일시, 형식문자열): 일시를 원하는 형식의 문자열로 반환
 *************************************************************************************************************** */
 -- 실행시점의 일/시를 조회 함수
+SELECT DISTINCT now()
+FROM emp;
+-- 결과는 같음
+SELECT NOW();
+SELECT CURDATE(), CURTIME();
+SELECT YEAR(CURDATE());
 
 -- 날짜 타입에서 년 월 일 조회
+SELECT YEAR(hire_date),
+	   MONTH(hire_date),
+       DAY(hire_date)
+FROM emp;
+
+SELECT YEAR(CURDATE()),
+	   DAYOFWEEK(CURDATE()); -- 1:일요일 7:토요일
 
 -- 시간 타입에서 시 분 초 조회
+SELECT HOUR(CURTIME()),
+	   MINUTE(CURTIME()),
+       SECOND(CURTIME());
 
 -- 특정 기간 만큼 전,후의 일시를 조회
-
+SELECT ADDDATE(CURDATE(), 20), -- 현재 날짜에서 20일 후
+	   SUBDATE(CURDATE(), -20); -- 음수를 줘서 계산도 가능
+       
+SELECT ADDDATE(CURDATE(), INTERVAL 3 YEAR);
+SELECT ADDDATE(CURDATE(), INTERVAL 40 DAY);
+SELECT SUBDATE(CURDATE(), INTERVAL 40 DAY);
+SELECT ADDDATE(CURDATE(), INTERVAL -40 DAY); -- ADDDATE만으로도 SUB표현 가능
 
 -- EMP 테이블에서 부서이름(dept_name)이 'IT'인 직원들의 '입사일(hire_date)로 부터 10일전', 입사일, '입사일로 부터 10일 후' 의 날짜를 조회. 
 
-
+SELECT ADDDATE(hire_date, INTERVAL 10 DAY) as '입사 10일전',
+       hire_date as '입사일',
+       ADDDATE(hire_date, INTERVAL -10 DAY) as '입사 10일후',
+       dept_name
+FROM emp
+WHERE dept_name = 'IT';
 -- ID(emp_id)가 200인 직원의 이름(emp_name), 입사일(hire_date)를 조회. 입사일은 yyyy년 mm월 dd일 형식으로 출력.
-
+SELECT emp_name, 
+	   DATE_FORMAT(hire_date,"%Y년 %m월 %d일"),
+       DATE_FORMAT(hire_date,"%Y %M %D")
+FROM emp;
 
 --  각 직원의 이름(emp_name), 근무 개월수 (입사일에서 현재까지의 달 수)를 계산하여 조회. 근무개월수 내림차순으로 정렬.
-
-
+SELECT emp_name,
+	   TIMESTAMPDIFF(MONTH, hire_date, CURDATE()) as '근속월',
+       TIMESTAMPDIFF(YEAR, hire_date, CURDATE()) as '근속년'
+FROM emp
+ORDER BY TIMESTAMPDIFF(MONTH, hire_date, CURDATE()) DESC;
 
 /* *************************************************************************************
 함수 - 조건 처리함수
@@ -114,13 +165,29 @@ ifnull (기준컬럼(값), 기본값): 기준컬럼(값)이 NULL값이면 기본
 if (조건수식, 참, 거짓): 조건수식이 True이면 참을 False이면 거짓을 출력한다.
 ************************************************************************************* */
 
-
 -- EMP 테이블에서 직원의 ID(emp_id), 이름(emp_name), 업무(job), 부서(dept_name)을 조회. 부서가 없는 경우 '부서미배치'를 출력.
+SELECT emp_id,
+       emp_name,
+       job,
+       IFNULL(dept_name, "부서미배치") as "dept_name"
+FROM emp
+ORDER BY dept_name ASC;
 
 
 -- EMP 테이블에서 직원의 ID(emp_id), 이름(emp_name), 급여(salary), 커미션 (salary * comm_pct)을 조회. 커미션이 없는 직원은 0이 조회되록 한다.
 
+SELECT  emp_id,
+		emp_name,
+        salary, 
+        IFNULL(salary * comm_pct,"0") as 'commision'
+FROM emp;
 
+-- if문 실습
+SELECT  emp_id,
+		emp_name,
+        salary, 
+        IF(comm_pct IS NULL,"커미션있음","커미션없음") as 'commision'
+FROM emp;
 
 /***********************************************
 함수 - 타입변환함수
@@ -139,13 +206,23 @@ convert(값, 변환할타입)
 	- 정수를 날짜, 시간타입으로 변환할 때는 양수만 가능. (음수는 NULL 반환)
 ***********************************************/
 -- 시간을 정수형태로 변환   
-
+SELECT '10'+ '20'; -- mysql에서 int로 자동 변환
+SELECT DATEDIFF(CURDATE(), '2025-03-20');
+SELECT DATEDIFF(CURDATE(), NOW()); -- 자동으로 타잎 변환함
 
 -- 숫자를 날짜로 변환
+SELECT NOW(), 
+	   CAST(NOW() AS SIGNED),
+       CAST(NOW() AS CHAR);
 
+SELECT  NOW(),
+		CONVERT('2025-04-04', DATE),
+        CONVERT('122325', TIME);
 
 -- 숫자를 문자열로 변환
-
+SELECT CONVERT(202.12,CHAR);
+SELECT CONCAT(1,25,"ddk",102.1);
+        
 
 /* *************************************
 CASE 문
@@ -162,19 +239,54 @@ case when 조건 then 출력값
        end
 
 ************************************* */
+SELECT CASE DAYOFWEEK(CURDATE()) WHEN 1 THEN "일요일"
+								 WHEN 2 THEN "월요일"
+                                 WHEN 3 THEN "화요일"
+                                 WHEN 4 THEN "수요일"
+                                 WHEN 5 THEN "목요일"
+                                 WHEN 6 THEN "금요일"
+                                 WHEN 7 THEN "토요일" END AS "요일";
 
 -- EMP테이블에서 급여와 급여의 등급을 조회하는데 급여 등급은 10000이상이면 '1등급', 10000미만이면 '2등급' 으로 나오도록 조회
-
+SELECT  salary,
+		CASE WHEN salary >= 10000 THEN "1등급"
+			 ELSE "2등급"
+			 END AS "등급"
+FROM emp;
 
 -- EMP 테이블에서 업무(job)이 'AD_PRES'거나 'FI_ACCOUNT'거나 'PU_CLERK'인 직원들의 ID(emp_id), 이름(emp_name), 업무(job)을 조회.  
 -- 업무(job)가 'AD_PRES'는 '대표', 'FI_ACCOUNT'는 '회계', 'PU_CLERK'의 경우 '구매'가 출력되도록 조회
+SELECT  emp_id,
+		emp_name,
+        CASE job WHEN "AD_PRES" THEN "대표"
+				 WHEN "FI_ACCOUNT" THEN "회계"
+                 WHEN "PU_CLERK" THEN "구매"
+                 ELSE job  
+                 END AS JOB
+FROM emp
+WHERE job in ('AD_PRES', 'FI_ACCOUNT', 'PU_CLERK','IT_PROG');	
 
 
 -- EMP 테이블에서 부서이름(dept_name)과 급여 인상분을 조회.
 -- 급여 인상분은 부서이름이 'IT' 이면 급여(salary)에 10%를 'Shipping' 이면 급여(salary)의 20%를 'Finance'이면 30%를 나머지는 0을 출력
-
-
+SELECT  dept_name,
+		-- 급여 인상분
+        CASE dept_name WHEN 'IT' THEN ROUND(salary * 0.1, 2)
+					   WHEN 'Shipping' THEN ROUND(salary * 0.2, 2)
+                       WHEN 'Finance' THEN ROUND(salary * 0.3, 2)
+                       ELSE 0
+                       END AS "급여인상분"
+FROM emp;
 
 -- EMP 테이블에서 직원의 ID(emp_id), 이름(emp_name), 급여(salary), 인상된 급여를 조회한다. 
 -- 단 급여 인상율은 급여가 5000 미만은 30%, 5000이상 10000 미만는 20% 10000 이상은 10% 로 한다.
 
+SELECT  emp_id,
+		emp_name,
+        salary,
+        -- 인상된 급여 
+        CASE WHEN salary < 5000 THEN salary * 1.3 -- 연산자를 사용하는 곳은 Func도 쓸 수 있다
+			 WHEN salary >= 10000 THEN salary * 1.2
+             ELSE salary * 1.2
+             END AS "Raised Salary"
+FROM emp;
