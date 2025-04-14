@@ -14,32 +14,36 @@ import numpy as np
 st.set_page_config(page_title="타이틀")
 
 
-v1 = st.sidebar.slider("X", 1, 10)
-st.write("선택된 값: ", f"**{v1}**")
+# v1 = st.sidebar.slider("X", 1, 10)
+# st.write("선택된 값: ", f"**{v1}**")
 
-v2 = st.sidebar.text_input("이름")
-st.write("이름: " + f"**{v2}**")
+# v2 = st.sidebar.text_input("이름")
+# st.write("이름: " + f"**{v2}**")
 
-v3 = st.sidebar.radio(
-    "지역선택",
-    ["서울", "인천", "부산"],
-    captions=["2020", "2020", "2023"],
-    index=None,  # 아무것도 선택되지 않도록 한다.
-)
+# v3 = st.sidebar.radio(
+#     "지역선택",
+#     ["서울", "인천", "부산"],
+#     captions=["2020", "2020", "2023"],
+#     index=None,  # 아무것도 선택되지 않도록 한다.
+# )
 
 #######################
 # With 문으로 정의
 #######################
-# with st.sidebar:
-#    wv1 = st.slider("Y", 1, 10)
-#    wv2 = st.text_input("이름")
-#    wv3 = st.radio(
-#        "지역선택",
-#        ["서울", "인천", "부산"],
-#        captions=["2020", "2020", "2023"],
-#        index=None,  # 아무것도 선택되지 않도록 한다.
-#    )
+with st.sidebar:
+   wv1 = st.slider("Y", 1, 10)
+   wv2 = st.text_input("이름")
+   wv3 = st.radio(
+       "지역선택",
+       ["서울", "인천", "부산"],
+       captions=["2020", "2020", "2023"],
+       index=None,  # 아무것도 선택되지 않도록 한다.
+   )
+if wv1:
+    ############# sidebar에서 선택한 값들 출력
+    st.write("선택된 값: ", f"**{wv1}**")
+if wv2:
+    st.write("이름: " + f"**{wv2}**")
+if wv3:
+    st.write(f"선택한 지역: **{wv3}**")
 
-# st.write("선택된 값: ", f"**{wv1}**")
-# st.write("이름: " + f"**{wv2}**")
-# st.write(f"선택한 지역: **{wv3}**")

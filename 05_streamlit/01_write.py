@@ -23,8 +23,6 @@ import streamlit as st
 ## commit test
 
 
-
-
 # 타이틀 입력
 st.title('이것은 타이틀 입니다')
 
@@ -32,6 +30,7 @@ st.title('이것은 타이틀 입니다')
 ## streamlit 지원 이모지: https://streamlit-emoji-shortcodes-streamlit-app-gwckff.streamlit.app/
 ## OS 지원 이모지: `window키 + .` (맥: `FN키`)
 st.title('즐겁게 합시다. :laughing:')
+
 
 # Header 입력
 st.header('헤더를 입력할 수 있어요! :star2:')
@@ -68,6 +67,9 @@ st.markdown('*Streamlit*은 **마크다운 문법을 지원**합니다.')
 ## :컬러코드[출력할 내용] ex) :blue[안녕하세요.]
 st.markdown("컬러코드를 이용해서 텍스트 색을 지정합니다. :green[초록색], **:blue[파란색]**, *:red[빨강색입니다.]*")
 st.markdown("Latax를 이용해 출력할 수식은 \$ \$ 로 감싸줍니다. $\cfrac{1}{2}$, :green[$\sqrt{x^2+y^2}=1$]")
+st.markdown(":red[$\sqrt{x^2+y^2}=1$]")  # 수식 출력
+st.markdown(":violet[$\sqrt{x^2+y^2}=1$]")  # 수식 출력
+st.markdown(":orange[$\sqrt{x^2+y^2}=1$]")  # 수식 출력 
 
 ###### LaTex 수식 출력 함수. $ $ 로 감쌀 필요없다.
 st.latex('\sqrt{x^2+y^2}=1')
@@ -123,8 +125,16 @@ st.exception(KeyError("없는 키입니다."))
 #############################################################
 import matplotlib.pyplot as plt
 import numpy as np
+import pandas as pd
+
 
 arr = np.random.normal(1, 1, size=100)
+df = pd.DataFrame(arr, columns=['value'])
+df['value'].hist(bins=30)  # matplotlib을 이용한 그래프 출력
+
+
+# st.write(df)  # 데이터프레임 출력
+# st.write(arr)  # numpy array 출력
 
 ## 함수 형식
 fig = plt.figure()
