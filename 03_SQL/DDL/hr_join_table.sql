@@ -1,8 +1,9 @@
+-- Active: 1744675975748@@127.0.0.1@3306@hr_join
 -- CREATE DATABASE hr_join;
 -- USE  hr_join;
 
 -- TABLE DROP 시킬때만 설정
--- set foreign_key_checks=1;
+-- set foreign_key_checks=0;
 
 -- ------------------------------------------------------
 -- DDL FOR DEPT
