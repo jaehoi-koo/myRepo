@@ -1,7 +1,7 @@
 import streamlit as st
 import pandas as pd
 import numpy as np
-
+    
 ####################################################################################
 # 표(Table 출력)
 # 
@@ -34,13 +34,9 @@ change_df = st.data_editor(df)
 print(change_df)
 a = 10
 b = 20
-
 # st.table(): 테이블(static - interactive 기능 없이 표만 출력)
 st.subheader('st.table()')
 st.table(df)
-
-
-
 
 st.divider()
 

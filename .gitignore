@@ -1,3 +1,10 @@
+petitions_bpe.json
+petitions_corpus.txt
+ko_new.txt
+ko_new.zip
+cifar-10-python.tar.gz
+images.tar.gz
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]

@@ -1,72 +1,85 @@
 create user 'playdata'@'localhost' identified by '1111';
 create user 'playdata'@'%' identified by '1111';
 
--- 생성된 계정 확인
+-- 00_ddl.sql
+-- 생성된 계정을 확인
 select user, host from mysql.user;
-select * from mysql.user;
 
--- SQL문의 명령문이 끝날때 ; 붙여야함
--- 실행 : ctrl + enter 
--- 한줄 주석 ctrl + / 
+-- SQL문 작성: 한 명령문이 끝나면 ; 으로 종료.
+-- 실행: control + enter
+-- 한줄 주석
+-- 주석 : control + / 
 # 한줄 주석
-/*블럭주석
-*/
+/* block 주석 */
 
--- 계정에 권한 부여
--- grant 부여할 권한 on 대상 테이블 to 권한 부여할 계정
+-- 계정에 권한을 부여
+-- grant 부여할 권한 on 대상 테이블 to 권한부여할 계정
 grant all privileges on *.* to playdata@localhost;
 grant all privileges on *.* to playdata@'%';
+-- *:DB.*:table
 
--- 현재 사용중인 DB확인-- 
-SELECT DATABASE();
--- 모든 db 확인 --
-SHOW databases;
+###########################
+# DB 생성
+###########################
+create database test_db;
 
--- CREATE DB --
-CREATE DATABASE test_db;
+create database hr;
+create database my_db;
+show databases;
+-- grant all privileges on test_db.customer to playdata@'%';
 
--- DROP DB -- 
-DROP database test_db;
+drop database hr;
+drop database my_db;
 
--- DB 선택 -- 
-USE test_db; -- test_db를 사용할 것
+use test_db;
 
--- table 생성 -- 
-CREATE TABLE member(
-id VARCHAR(10) PRIMARY KEY, -- 최대 10글자 --
-password VARCHAR(10) NOT NULL, -- not null 필수입력 --
-name VARCHAR(10) NOT NULL,
-point INT DEFAULT'1000', -- 값이 없으면 1000 기본
-email VARCHAR(100) NOT NULL UNIQUE, -- qnique : 중복허용 안함
-age INT CHECK(age > 20), -- CHECK 안에 조건식 사용가능
-join_date TIMESTAMP NOT NULL DEFAULT current_timestamp -- 값이 insert되는 시점을 지정
+-- table이름 => test_db database의 테이블.
+-- sys.sys_config  => 다른 database의 테이블 호출. db이름.테이블이름
+
+############################
+# 테이블 생성
+############################
+-- create table test_db.member();
+use test_db; -- database이름을 명시하지 않으면 test_db다.
+
+create table member(
+	id varchar(10) primary key, -- 최대 10글
+    password varchar(10) not null, -- not null (필수 입력)
+    name varchar(50) not null,
+    point int default 1000, -- 값을 넣지 않으면 1000을 기본값으로 넣는다.
+    email varchar(100) not null unique, -- unique: 중복값은 허용안함.
+    age int check(age > 20), 
+    join_date timestamp not null default current_timestamp 
+    -- default current_timestamp: 값이 insert되는 시점을 저장.
 );
--- gpt 생성 -- 
-CREATE TABLE member (
-    id VARCHAR(10) PRIMARY KEY,          -- 최대 10글자 (PK)
-    password VARCHAR(10) NOT NULL,       -- NOT NULL 필수 입력
-    name VARCHAR(10) NOT NULL,           -- NOT NULL 필수 입력
-    point INT DEFAULT 1000,              -- 값이 없으면 기본 1000
-    email VARCHAR(100) NOT NULL UNIQUE,  -- UNIQUE: 중복 허용 안 함
-    age INT CHECK (age > 20),            -- 나이 20세 이상만 허용
-    join_date TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP -- 가입 시각 자동 설정
-);
 
--- tables 확인, colume 확인-- 
-SHOW TABLES;
-DESC member;
+-- 테이블들 조회
+show tables;
+-- 테이블의 컬럼정보 조회
+desc member;
+-- 테이블 삭제
+drop table if exists aaaaaa;
 
--- table SELECT -- 
-SELECT * FROM member;
+drop table if exists member;
 
---- DROP TABLE --- 
-DROP TABLE IF EXISTS aaa;
-DROP TABLE IF EXISTS member;
+#########################
+# insert 
+#########################
+-- 모든 컬럼에 값을 다 넣을 경우 컬럼명 생략
+insert into member 
+values ('id-100', '1111', '이순신', 5000, 'lee@a.com', 30, 
+	    '2023-12-10 11:22:33');
 
--- INSERT 실습 -- 
-INSERT INTO member VALUES ('id-100', '1111', '이순신', 5000, 'lee@a.com', 30, '2023-12-10 11:22:30');
-INSERT INTO member (id, password, name, email) VALUES ('id-101', '1111', '유관순','yu@a.com'); 
-INSERT INTO member (id, password, name, point, email) VALUES ('id-102', '1111', '신사임당', NULL,'5000money@a.com'); -- NULL을 강제로 넣어줄 수도 있음
-INSERT INTO member (id, password, name, point, age, email) VALUES ('id-103', '1111', '세종', NULL, 5, '1000money@a.com'); 
+-- point, join_date: default값, age: null
+insert into member (id, password, name, email)
+values ('id-200', '2222', '유관순', 'ryu@a.com');
 
-SELECT * FROM member;
+insert into member (id, password, name, point, email)
+values ('id-300', '3333', '강감찬', null, 'kang@aaa.com');
+
+insert into member (id, password, name, email, age)
+values ('id-400', '2222', '유관순', 'ryu2@a.com', 5);
+
+select * from member;
+
+

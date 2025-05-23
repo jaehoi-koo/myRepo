@@ -1,4 +1,4 @@
-# %%writefile 파일경로 -> cell의 작성한 내용을 해당경로에 저장, jupyer lab 전용
-def check_bmi(height, weight):
-    print()
-    return weight/height**2
+# %load mypackage/weight_helper.py
+# %%writefile 파일경로 -> cell의 작성한 내용을 경로의 파일에 작성(저장.) -> cell의 첫줄에 넣어야함.
+def check_bmi(tall, weight):
+    return weight/tall**2
