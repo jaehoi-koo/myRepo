@@ -5,6 +5,8 @@ ko_new.zip
 cifar-10-python.tar.gz
 images.tar.gz
 
+.env
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
