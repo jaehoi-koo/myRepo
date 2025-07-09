@@ -12,7 +12,7 @@
     {% if error_message %}
         <p style="color:red; font-size:0.8em;">{{error_message}}</p>
     {% endif %}
-    <form action="{% url 'polls:vote' %}" method="post">
+    <form action="/polls/vote" method="post">
         {% csrf_token %}
 
         <input type="hidden" name="question_id" value="{{question.pk}}">

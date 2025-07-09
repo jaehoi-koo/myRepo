@@ -6,16 +6,15 @@
     <title>설문 목록</title>
 </head>
 <body>
-    <a href="{% url 'polls:list' %}">설문조사 목록</a>
-    <a href="{% url 'polls:vote_create' %}">신규 설문조사 등록</a>
+    <a href="/polls/list">설문조사 목록</a>
+    <a href="/polls/vote_create">신규 설문조사 등록</a>
     <h1>설문 목록</h1>
     <!-- Context value을 출력 -->
     {% for question in question_list %}
     <a href="{% url 'polls:vote_form' question.pk %}">
         {{ question.pk }}. {{ question.question_text | truncatechars:20 }}</a><br>
-    
-    {% empty %} <!-- question_list가 비어있는 경우 -->
+    {% empty %}
         등록된 설문조사가 없습니다.
-    {% endfor %} <!-- for문 종료 -->
+    {% endfor %}
 </body>
 </html>

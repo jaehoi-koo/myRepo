@@ -6,8 +6,10 @@
 
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
+from django.urls import reverse, resolve
 from datetime import datetime 
 from .models import Question, Choice
+
 
 def welcome_poll_old(request):
     # view 함수 -> 1개 이상의 파라미터를 선언. (1개 필수-HttpRequest객체를 받는다.)
@@ -93,8 +95,8 @@ def vote(request):
         # return render(request, "polls/vote_result.html", {"choice":choice, "question":question})
         
         # vote_result를 요청하도록 응답 - http 응답: 302, 이동할 url ==> redirect()
-        response = redirect(f"/polls/vote_result/{question_id}")
-        print(type(response))
+        # response = redirect(f"/polls/vote_result/{question_id}")
+        response = redirect(reverse("polls:vote_result", args=[question_id])) #app_name이 polls인 urls.py에서 name="vote_result"인 url을 반환
         return response
 
     else: #선택이 안된경우(예외상황)
@@ -111,3 +113,20 @@ def vote(request):
 def vote_result(request, question_id):
     question = Question.objects.get(pk=question_id)
     return render(request, "polls/vote_result.html", {"question":question})
+
+def vote_create(request):
+    http_method = request.method
+    if http_method == "GET":
+        return render(request, "polls/vote_create.html")
+    elif http_method == "POST":
+        question_text = request.POST.get("question_text")
+        #같은 이름으로 여러개 값이 전달된 경우 getlist("요청파라미터이름")
+        choice_list = request.POST.getlist("choice_text")
+        
+        #DB에 저장
+        q = Question(question_text=question_text)
+        q.save()
+        for choice_text in choice_list:
+            c = Choice(choice_text=choice_text, question=q)
+            c.save()
+        return redirect(reverse("polls:list"))

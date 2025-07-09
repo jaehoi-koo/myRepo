@@ -11,8 +11,6 @@
     <h2>{{name}}님 안녕하세요.</h2>
     현재시간: <b>{{now}}</b>  
     {# {{now}} -> view에서 now라는 이름으로 전달된 값을 출력 #}
-    <a href="{% url 'polls:list' %}">설문조사 목록</a>
-    <a href="{% url 'polls:vote_create' %}">신규 설문조사 등록</a>
     
 </body>
 </html>

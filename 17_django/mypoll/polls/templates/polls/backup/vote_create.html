@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>설문 등록</title>
+</head>
+<body>
+    <h1>설문 질문등록</h1>
+    <form method="post">
+        {% csrf_token %}
+        <h2>질문</h2>
+        <input type="text" name="question_text"><br>
+        <h2>보기</h2>
+        <div id="choice_layer">
+            <input type="text" name="choice_text" required>
+        </div>
+        <div>
+            <button type="button" onclick="addChoice()">보기추가</button>
+            <button type="button" onclick="delChoice()">보기삭제</button>
+            <button type="submit">등록</button>
+        </div>
+    </form>
+<script>
+    function addChoice(){
+        //보기 입력 input form을 추가하는 함수
+        input = document.createElement("input")
+        input.setAttribute("type", "text")
+        input.setAttribute("name", "choice_text")
+        input.setAttribute("required", true)
+
+        div = document.getElementById("choice_layer")
+        div.appendChild(input)
+    }
+
+    function delChoice(){
+        //보기 입력 input form을 삭제하는 함수
+        //하나만 있을 경우 삭제하지 않는다
+        div = document.getElementById("choice_layer")
+        if (div.children.length >= 2){
+            div.removeChild(div.lastChild)
+        }else{
+            alert("삭제할 수 없습니다.")
+        }    
+    }
+</script>
+</body>
+</html>
