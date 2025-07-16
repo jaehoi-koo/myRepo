@@ -1,18 +1,13 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>투표 결과</title>
-</head>
-<body>
+<!-- polls/templates/polls/vote_result.html -->
+{% extends "layouts/main_layout.html" %}
+
+{% block title%}설문 결과{%endblock title%}
+{% block contents%}
     <h1>설문 투표 결과</h1>
-    <h2>{{question.pk}}.{{question.question_text}}</h2>
+    <h2>{{question.pk}}. {{question.question_text}}</h2>
     <ol>
         {% for choice in question.choice_set.all %}
-            <li>{{choice.choice_text}} - {{choice.votes}}표</li>
+            <li>{{choice.choice_text}} - {{choice.votes}}</li>
         {% endfor %}
     </ol>
-    <a href="{% url 'polls:list' %}">설문조사 목록</a>
-</body>
-</html>
+{%endblock contents%}
